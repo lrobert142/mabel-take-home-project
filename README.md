@@ -44,3 +44,7 @@ eg [mable_transactions.csv](./mable_transactions.csv)
 - A transaction `amount` _cannot_ be negative. Any `amount` with a negative value should return an error stop processing
 - If a payment fails partway through both accounts are 'reverted' to their previous state before the transaction was
   run, even if this would cause an account to have a negative balance
+
+## Tests
+
+Make sure you have [Go](https://go.dev/) installed, then run all unit tests via `go test ./...`

@@ -29,12 +29,12 @@ func TestAccountsCollector_Collect(t *testing.T) {
 		"Return an error when the balance cannot be parsed": {
 			record:           []string{validId, "not a number"},
 			errorContains:    "unable to read balance value",
-			expectedAccounts: nil,
+			expectedAccounts: []*model.Account{},
 		},
 		"Return an error when there is an issue creating an account": {
 			record:           []string{"bad ID", validBalance},
 			errorContains:    "unable to create account",
-			expectedAccounts: nil,
+			expectedAccounts: []*model.Account{},
 		},
 	}
 
