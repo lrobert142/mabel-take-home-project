@@ -11,7 +11,7 @@ type AccountsCollector struct {
 	accounts []*model.Account
 }
 
-//TODO: TESTME!
+// Collect collects record data, transforming it into a model.Account value and storing it
 func (l *AccountsCollector) Collect(record []string) error {
 	rawBalance := record[1]
 	balance, err := strconv.ParseFloat(rawBalance, 64)
@@ -25,16 +25,15 @@ func (l *AccountsCollector) Collect(record []string) error {
 	}
 
 	l.accounts = append(l.accounts, account)
-
 	return nil
 }
 
-//TODO: TESTME
+// GetAccounts returns all stored accounts
 func (l *AccountsCollector) GetAccounts() []*model.Account {
 	return l.accounts
 }
 
-//TODO: TESTME
+// NewAccountsCollector creates a new AccountsCollector with appropriate defaults
 func NewAccountsCollector() *AccountsCollector {
 	return &AccountsCollector{
 		accounts: make([]*model.Account, 0),

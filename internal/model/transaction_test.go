@@ -50,7 +50,7 @@ func TestNewTransaction(t *testing.T) {
 	}
 }
 
-func TestProcess(t *testing.T) {
+func TestTransact(t *testing.T) {
 	type transactionAndAccounts struct {
 		from        *MockBalanceUpdater
 		to          *MockBalanceUpdater

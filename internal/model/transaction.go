@@ -12,6 +12,9 @@ type Transaction struct {
 	amount float64
 }
 
+// Transact updates the balances of both `from` and `to` accounts.
+//
+// If an error occurs partway through, both accounts will be rolled back to their last valid state.
 func (t *Transaction) Transact() error {
 	if err := t.from.UpdateBalance(-t.amount); err != nil {
 		return fmt.Errorf("failed to update balance for 'from': %w", err)
@@ -27,6 +30,9 @@ func (t *Transaction) Transact() error {
 	return nil
 }
 
+// NewTransaction creates a new Transaction with the specified details.
+//
+// If data is invalid for initialisation, an error will be returned.
 func NewTransaction(from BalanceUpdater, to BalanceUpdater, amount float64) (*Transaction, error) {
 	if amount < 0 {
 		return nil, errors.TransactionAmountInvalid

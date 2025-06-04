@@ -11,6 +11,8 @@ import (
 
 // TODO: It may be worth trying to do an integration test for this. Just so it doesn't need to be manually rebuilt and tested by Mabel. Convenience ie key!
 // It would need to be an integration test because it tests the whole flow and deals with real files.
+//
+// TODO: What happens if the From and To are the same account? Does it just work? Should it not allow that?
 func main() {
 	//Note: os.Args[0] is the name of the program, so start from 1 instead.
 	accountsCollector := collector.NewAccountsCollector()
