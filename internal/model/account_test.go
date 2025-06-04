@@ -3,7 +3,6 @@ package model_test
 import (
 	"mabel-take-home-project/internal/errors"
 	"mabel-take-home-project/internal/model"
-	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,7 +10,7 @@ import (
 
 func TestNew(t *testing.T) {
 	validId := "1234567890123456"
-	validBalance := int64(100)
+	validBalance := float64(100)
 
 	tooLongId := "12345678901234567890"
 	tooShortId := "123"
@@ -19,7 +18,7 @@ func TestNew(t *testing.T) {
 
 	tests := map[string]struct {
 		id              string
-		balance         int64
+		balance         float64
 		expectedAccount *model.Account
 		expectedError   error
 	}{
@@ -63,8 +62,8 @@ func TestUpdateBalance(t *testing.T) {
 
 	tests := map[string]struct {
 		account         *model.Account
-		amount          int64
-		expectedBalance int64
+		amount          float64
+		expectedBalance float64
 		expectedError   error
 	}{
 		"Return no error and update the account balance when it finishes positive": {
@@ -90,30 +89,6 @@ func TestUpdateBalance(t *testing.T) {
 			amount:          -200,
 			expectedBalance: 100,
 			expectedError:   errors.AccountBalanceUpdateNegative,
-		},
-		"Return error and do not update balance when the account would finish over the minimum negative value (underflow detection - balance at min)": {
-			account:         model.NewTestAccount(id, math.MinInt64),
-			amount:          -100,
-			expectedBalance: math.MinInt64,
-			expectedError:   errors.AccountBalanceUpdateUnderflow,
-		},
-		"Return error and do not update balance when the account would finish over the minimum negative value (underflow detection - amount at min)": {
-			account:         model.NewTestAccount(id, -100),
-			amount:          math.MinInt64,
-			expectedBalance: -100,
-			expectedError:   errors.AccountBalanceUpdateUnderflow,
-		},
-		"Return error and do not update balance when the account would finish over the maximum positive value (overflow detection - balance at max)": {
-			account:         model.NewTestAccount(id, math.MaxInt64),
-			amount:          100,
-			expectedBalance: math.MaxInt64,
-			expectedError:   errors.AccountBalanceUpdateOverflow,
-		},
-		"Return error and do not update balance when the account would finish over the maximum positive value (overflow detection - amount at max)": {
-			account:         model.NewTestAccount(id, 100),
-			amount:          math.MaxInt64,
-			expectedBalance: 100,
-			expectedError:   errors.AccountBalanceUpdateOverflow,
 		},
 	}
 

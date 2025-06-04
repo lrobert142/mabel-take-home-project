@@ -39,11 +39,8 @@ eg [mable_transactions.csv](./mable_transactions.csv)
 - Accounts _may_ start with a negative balance
 - "...money cannot be transferred _from_ them if it will put the account balance below $0..." however money can be
   transferred _to_ them, even if the final balance would be below zero
-- Transactions that would result in account balances being over the maximum allowed data value or under the minimum
-  allowed data value will result in an error and no balance change
-- A transaction _may_ provide `From`/`To` IDs that do not exist in the system (account not found), in this case that
-  transaction should return an error and the remaining transactions continue to be processed
-- A transaction `amount` _cannot_ be negative. Any `amount` with a negative value should return an error and the
-  remaining transactions continue to be processed
+- If a transaction contains a `From` or `To` value that does not correlate to an account, an error is raised and
+  processing stops
+- A transaction `amount` _cannot_ be negative. Any `amount` with a negative value should return an error stop processing
 - If a payment fails partway through both accounts are 'reverted' to their previous state before the transaction was
   run, even if this would cause an account to have a negative balance

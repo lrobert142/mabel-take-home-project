@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	customErrors "mabel-take-home-project/internal/errors"
 	"mabel-take-home-project/internal/model"
 	"testing"
 )
@@ -17,13 +18,36 @@ type MockBalanceUpdater struct {
 	actualNumberOfUpdateBalanceCalls   int
 }
 
-func (m *MockBalanceUpdater) UpdateBalance(_ int64) error {
+func (m *MockBalanceUpdater) UpdateBalance(_ float64) error {
 	m.actualNumberOfUpdateBalanceCalls += 1
 
 	if m.mustFail {
 		return mockUpdateBalanceError
 	}
 	return nil
+}
+
+func TestNewTransaction(t *testing.T) {
+	tests := map[string]struct {
+		amount        float64
+		expectedError error
+	}{
+		"Return no error when the amount is valid": {
+			amount:        100,
+			expectedError: nil,
+		},
+		"Return an error when the amount is invalid": {
+			amount:        -100,
+			expectedError: customErrors.TransactionAmountInvalid,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			_, actualError := model.NewTransaction(&MockBalanceUpdater{}, &MockBalanceUpdater{}, test.amount)
+			assert.Equal(t, test.expectedError, actualError)
+		})
+	}
 }
 
 func TestProcess(t *testing.T) {
@@ -50,7 +74,7 @@ func TestProcess(t *testing.T) {
 				return &transactionAndAccounts{
 					from:        from,
 					to:          to,
-					transaction: model.NewTransaction(from, to, 100),
+					transaction: model.NewTestTransaction(from, to, 100),
 				}
 			}(),
 			expectedError: nil,
@@ -69,7 +93,7 @@ func TestProcess(t *testing.T) {
 				return &transactionAndAccounts{
 					from:        from,
 					to:          to,
-					transaction: model.NewTransaction(from, to, 100),
+					transaction: model.NewTestTransaction(from, to, 100),
 				}
 			}(),
 			expectedError: fmt.Errorf("failed to update balance for 'from': %w", mockUpdateBalanceError),
@@ -88,7 +112,7 @@ func TestProcess(t *testing.T) {
 				return &transactionAndAccounts{
 					from:        from,
 					to:          to,
-					transaction: model.NewTransaction(from, to, 100),
+					transaction: model.NewTestTransaction(from, to, 100),
 				}
 			}(),
 			expectedError: fmt.Errorf("failed to update balance for 'to': %w", mockUpdateBalanceError),
@@ -97,7 +121,7 @@ func TestProcess(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			assert.Equal(t, test.expectedError, test.transactionAndAccounts.transaction.Process())
+			assert.Equal(t, test.expectedError, test.transactionAndAccounts.transaction.Transact())
 			assert.Equal(t, test.transactionAndAccounts.to.expectedNumberOfUpdateBalanceCalls, test.transactionAndAccounts.to.actualNumberOfUpdateBalanceCalls)
 			assert.Equal(t, test.transactionAndAccounts.from.expectedNumberOfUpdateBalanceCalls, test.transactionAndAccounts.from.actualNumberOfUpdateBalanceCalls)
 		})
