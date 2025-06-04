@@ -2,6 +2,23 @@
 
 Take home interview project for Mabel
 
+## Quickstart
+
+Make sure you have [Go](https://go.dev/) installed, then run the project via
+`go run ./cmd/mabel-take-home-project <account_balance_csv> <transactions_csv>`
+
+- `account_balance_csv` is a CSV file containing the starting information for an account (
+  see  [mable_account_balances.csv](./mable_account_balances.csv) as an example)
+- `transactions_csv` is a CSV file containing a list of transactions between existing accounts (
+  see [mable_transactions.csv](./mable_transactions.csv) as an example)
+
+### Tests
+
+Make sure you have [Go](https://go.dev/) installed, then:
+
+- Unit tests can be run with `go test ./...`
+- Integration tests can be run with `go test -tags=integration ./...`
+
 ## Summary
 
 You are a developer for a company that runs a very simple banking service. Each
@@ -44,7 +61,5 @@ eg [mable_transactions.csv](./mable_transactions.csv)
 - A transaction `amount` _cannot_ be negative. Any `amount` with a negative value should return an error stop processing
 - If a payment fails partway through both accounts are 'reverted' to their previous state before the transaction was
   run, even if this would cause an account to have a negative balance
-
-## Tests
-
-Make sure you have [Go](https://go.dev/) installed, then run all unit tests via `go test ./...`
+- A transaction may specify `from` and `to` as the same account. It will be processed like normal, assuming all other
+  restrictions and assumptions are respected
